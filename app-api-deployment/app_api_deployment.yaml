@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-api-deploy
+  labels:
+    name: app-pi-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: app-api-pod
+  template:
+    metadata:
+      name: app-api-pod
+      labels:
+        name: app-api-pod
+    spec:
+      containers:
+        - name: app-api
+          image: tylercounter/bookstore-api
+          ports:
+          - containerPort: 80
+          env:
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: mysql-admin-password
+          envFrom:
+          - configMapRef:
+              name: servers-configmap
+
+
